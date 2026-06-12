@@ -1,0 +1,16 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Grow Calendar",
+        "description": "Lege einen Grow-Kalender an.",
+        "data": {
+          "grow_name": "Name"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Dieser Grow-Kalender ist bereits eingerichtet."
+    }
+  }
+}

@@ -1,0 +1,31 @@
+clear_phase_date:
+  name: Phasendatum löschen
+  description: Löscht das Startdatum einer Grow-Phase.
+  fields:
+    phase:
+      name: Phase
+      description: Phase, deren Startdatum gelöscht werden soll.
+      required: true
+      selector:
+        select:
+          options:
+            - label: Saat
+              value: seed
+            - label: Vegetation
+              value: vegetation
+            - label: Blüte
+              value: bloom
+            - label: Ernte
+              value: harvest
+    grow_name:
+      name: Grow-Name
+      description: Optionaler Name des Grows, falls mehrere Grows eingerichtet sind.
+      required: false
+      selector:
+        text:
+    entry_id:
+      name: Config Entry ID
+      description: Optionaler eindeutiger Config-Entry-Identifier.
+      required: false
+      selector:
+        text:
