@@ -31,14 +31,29 @@ const PHASES = [
 
 class GrowCalendarCard extends HTMLElement {
   setConfig(config) {
-    const entityPrefix = config.entity_prefix || config.entityPrefix || "grow";
+    const calendarEntity = config.calendar_entity || config.calendarEntity;
+    const entityPrefix =
+      config.entity_prefix ||
+      config.entityPrefix ||
+      this._prefixFromCalendarEntity(calendarEntity) ||
+      this._prefixFromDateEntities(config.dates) ||
+      this._prefixFromSensorEntity(config.phase_sensor || config.phaseSensor) ||
+      "grow";
 
     this.config = {
       name: "Grow Calendar",
       ...config,
       entity_prefix: entityPrefix,
-      phase_sensor: `sensor.${entityPrefix}_aktuelle_phase`,
-      calendar_entity: `calendar.${entityPrefix}_kalender`,
+      phase_sensor:
+        config.phase_sensor ||
+        config.phaseSensor ||
+        `sensor.${entityPrefix}_aktuelle_phase`,
+      day_sensor:
+        config.day_sensor ||
+        config.daySensor ||
+        `sensor.${entityPrefix}_tag_der_phase`,
+      calendar_entity: calendarEntity || `calendar.${entityPrefix}_kalender`,
+      dates: config.dates || {},
     };
   }
 
@@ -80,10 +95,15 @@ class GrowCalendarCard extends HTMLElement {
       </ha-card>
 
       <style>
+        grow-calendar-card {
+          container-type: inline-size;
+          display: block;
+        }
+
         ha-card {
           display: block;
-          min-width: 1160px;
           overflow: hidden;
+          width: 100%;
         }
 
         .card-content {
@@ -123,7 +143,7 @@ class GrowCalendarCard extends HTMLElement {
         .phases {
           display: grid;
           gap: 18px;
-          grid-template-columns: repeat(4, minmax(250px, 1fr));
+          grid-template-columns: repeat(4, minmax(0, 1fr));
         }
 
         .phase {
@@ -137,6 +157,7 @@ class GrowCalendarCard extends HTMLElement {
         }
 
         .phase.active {
+          background: color-mix(in srgb, var(--primary-color) 8%, transparent);
           border-color: var(--primary-color);
           box-shadow: inset 3px 0 0 var(--primary-color);
         }
@@ -195,23 +216,171 @@ class GrowCalendarCard extends HTMLElement {
           text-align: right;
         }
 
-        @media (max-width: 430px) {
+        @media (max-width: 900px) {
+          .phases {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+
+        @container (max-width: 900px) {
+          .phases {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+
+        @media (max-width: 640px) {
           .card-content {
-            padding: 18px;
+            gap: 14px;
+            padding: 12px;
+          }
+
+          .header {
+            gap: 10px;
+          }
+
+          .title {
+            font-size: 18px;
+          }
+
+          .subtitle {
+            font-size: 13px;
+          }
+
+          .header ha-icon {
+            --mdc-icon-size: 32px;
           }
 
           .phases {
-            grid-template-columns: repeat(4, minmax(250px, 1fr));
-            overflow-x: auto;
-            padding-bottom: 4px;
+            gap: 10px;
+            grid-template-columns: 1fr;
+          }
+
+          .phase {
+            gap: 8px;
+            padding: 10px;
+          }
+
+          .phase-header {
+            gap: 8px;
+            grid-template-columns: 22px minmax(0, 1fr);
+          }
+
+          .phase-header ha-icon {
+            --mdc-icon-size: 20px;
+          }
+
+          .phase-name {
+            font-size: 14px;
+          }
+
+          .phase-details {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 10px;
+            min-width: 0;
           }
 
           .phase-detail {
-            justify-content: flex-start;
+            display: flex;
+            flex: 1 1 0;
+            gap: 3px;
+            min-width: 0;
+          }
+
+          .phase-detail span {
+            display: inline;
+            flex: 0 0 auto;
+            font-size: 11px;
+            line-height: 1.2;
           }
 
           .phase-detail strong {
+            display: inline;
+            font-size: 11px;
+            line-height: 1.2;
+            min-width: 0;
+            overflow: hidden;
             text-align: left;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
+
+        @container (max-width: 640px) {
+          .card-content {
+            gap: 14px;
+            padding: 12px;
+          }
+
+          .header {
+            gap: 10px;
+          }
+
+          .title {
+            font-size: 18px;
+          }
+
+          .subtitle {
+            font-size: 13px;
+          }
+
+          .header ha-icon {
+            --mdc-icon-size: 32px;
+          }
+
+          .phases {
+            gap: 10px;
+            grid-template-columns: 1fr;
+          }
+
+          .phase {
+            gap: 8px;
+            padding: 10px;
+          }
+
+          .phase-header {
+            gap: 8px;
+            grid-template-columns: 22px minmax(0, 1fr);
+          }
+
+          .phase-header ha-icon {
+            --mdc-icon-size: 20px;
+          }
+
+          .phase-name {
+            font-size: 14px;
+          }
+
+          .phase-details {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 10px;
+            min-width: 0;
+          }
+
+          .phase-detail {
+            display: flex;
+            flex: 1 1 0;
+            gap: 3px;
+            min-width: 0;
+          }
+
+          .phase-detail span {
+            display: inline;
+            flex: 0 0 auto;
+            font-size: 11px;
+            line-height: 1.2;
+          }
+
+          .phase-detail strong {
+            display: inline;
+            font-size: 11px;
+            line-height: 1.2;
+            min-width: 0;
+            overflow: hidden;
+            text-align: left;
+            text-overflow: ellipsis;
+            white-space: nowrap;
           }
         }
       </style>
@@ -268,6 +437,14 @@ class GrowCalendarCard extends HTMLElement {
   }
 
   _dateState(phase) {
+    const configuredDateEntity = this.config.dates?.[phase.key];
+    if (configuredDateEntity) {
+      const configuredDateState = this._state(configuredDateEntity);
+      if (configuredDateState) {
+        return configuredDateState;
+      }
+    }
+
     const configuredCandidates = phase.suffixes.map(
       (suffix) => `date.${this.config.entity_prefix}_${suffix}`
     );
@@ -474,6 +651,38 @@ class GrowCalendarCard extends HTMLElement {
       .replace(/[\u0300-\u036f]/g, "");
   }
 
+  _prefixFromCalendarEntity(entityId) {
+    const match = String(entityId || "").match(/^calendar\.(.+)_kalender$/);
+    return match?.[1];
+  }
+
+  _prefixFromDateEntities(dates) {
+    if (!dates || typeof dates !== "object") {
+      return undefined;
+    }
+
+    for (const phase of PHASES) {
+      const entityId = dates[phase.key];
+      if (!entityId) {
+        continue;
+      }
+
+      for (const suffix of phase.suffixes) {
+        const match = String(entityId).match(new RegExp(`^date\\.(.+)_${suffix}$`));
+        if (match) {
+          return match[1];
+        }
+      }
+    }
+
+    return undefined;
+  }
+
+  _prefixFromSensorEntity(entityId) {
+    const match = String(entityId || "").match(/^sensor\.(.+)_+aktuelle_phase$/);
+    return match?.[1];
+  }
+
   _escape(value) {
     return String(value)
       .replace(/&/g, "&amp;")
@@ -484,11 +693,147 @@ class GrowCalendarCard extends HTMLElement {
   }
 }
 
-customElements.define("grow-calendar-card", GrowCalendarCard);
+if (!customElements.get("grow-calendar-card")) {
+  customElements.define("grow-calendar-card", GrowCalendarCard);
+}
+
+class GrowCalendarPhasesCard extends GrowCalendarCard {
+  getCardSize() {
+    return 2;
+  }
+
+  render() {
+    if (!this.config || !this._hass) {
+      return;
+    }
+
+    const phaseState = this._state(this.config.phase_sensor);
+    const currentPhase = this._phaseByLabel(phaseState?.state);
+
+    this.innerHTML = `
+      <ha-card>
+        <div class="phases-only">
+          ${PHASES.map((phase, index) =>
+            this._renderPhase(phase, index, currentPhase)
+          ).join("")}
+        </div>
+      </ha-card>
+
+      <style>
+        grow-calendar-phases-card {
+          container-type: inline-size;
+          display: block;
+        }
+
+        ha-card {
+          display: block;
+          overflow: hidden;
+          width: 100%;
+        }
+
+        .phases-only {
+          display: grid;
+          gap: 12px;
+          grid-template-columns: repeat(4, minmax(270px, 1fr));
+          overflow-x: auto;
+          padding: 12px;
+        }
+
+        .phase {
+          border: 1px solid var(--divider-color);
+          border-radius: 8px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          min-width: 0;
+          padding: 12px;
+        }
+
+        .phase.active {
+          border-color: var(--primary-color);
+          box-shadow: inset 3px 0 0 var(--primary-color);
+        }
+
+        .phase-header {
+          align-items: center;
+          display: grid;
+          gap: 8px;
+          grid-template-columns: 24px minmax(0, 1fr);
+        }
+
+        .phase-header ha-icon {
+          --mdc-icon-size: 22px;
+          color: var(--secondary-text-color);
+        }
+
+        .phase.active .phase-header ha-icon {
+          color: var(--primary-color);
+        }
+
+        .phase-name {
+          color: var(--primary-text-color);
+          font-size: 14px;
+          font-weight: 600;
+          line-height: 1.25;
+        }
+
+        .phase-details {
+          display: flex;
+          gap: 8px;
+          min-width: 0;
+        }
+
+        .phase-detail {
+          display: flex;
+          flex: 1 0 78px;
+          gap: 4px;
+          min-width: 0;
+        }
+
+        .phase-detail span {
+          color: var(--secondary-text-color);
+          flex: 0 0 auto;
+          font-size: 11px;
+          line-height: 1.2;
+        }
+
+        .phase-detail strong {
+          color: var(--primary-text-color);
+          display: inline;
+          font-size: 11px;
+          font-weight: 600;
+          line-height: 1.2;
+          overflow-wrap: anywhere;
+        }
+
+        @container (max-width: 900px) {
+          .phases-only {
+            grid-template-columns: repeat(2, minmax(270px, 1fr));
+          }
+        }
+
+        @container (max-width: 620px) {
+          .phases-only {
+            grid-template-columns: 1fr;
+          }
+        }
+      </style>
+    `;
+  }
+}
+
+if (!customElements.get("grow-calendar-phases-card")) {
+  customElements.define("grow-calendar-phases-card", GrowCalendarPhasesCard);
+}
 
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: "grow-calendar-card",
   name: "Grow Calendar Card",
   description: "Zeigt die aktuelle Grow-Phase, das Startdatum und vergangene Tage.",
+});
+window.customCards.push({
+  type: "grow-calendar-phases-card",
+  name: "Grow Calendar Phases Card",
+  description: "Zeigt nur die vier Grow-Phasen mit Start, Ende und Tagen.",
 });

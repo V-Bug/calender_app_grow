@@ -123,3 +123,40 @@ Die Karte leitet daraus automatisch diese Entitäten ab:
 - `date.grow_ernte`
 
 Wenn du mehrere Grows angelegt hast, kannst du dieselbe Karte mehrfach verwenden und nur `entity_prefix` austauschen.
+
+### Nur Phasen-Karten
+
+Wenn du nur die vier kleinen Phasen-Karten ohne Überschrift und Status anzeigen möchtest:
+
+```yaml
+type: custom:grow-calendar-phases-card
+entity_prefix: grow
+```
+
+Beispiel für einen zweiten Grow:
+
+```yaml
+type: custom:grow-calendar-card
+name: Grow Zelt 2
+entity_prefix: grow_zelt_2
+```
+
+Du musst die Sensoren dafür nicht einzeln in der Karte umbenennen. Der Prefix wird an dieser einen Stelle gesetzt und die Karte leitet Kalender, Phasensensor und Datum-Entitäten daraus ab.
+
+Alternativ kannst du den Kalender direkt setzen. Wenn er dem Muster `calendar.<prefix>_kalender` folgt, erkennt die Karte den Prefix daraus automatisch:
+
+```yaml
+type: custom:grow-calendar-card
+name: Grow Zelt 2
+calendar_entity: calendar.grow_zelt_2_kalender
+```
+
+Falls deine Entity-IDs manuell anders heißen, kannst du Kalender und Phasensensor explizit setzen:
+
+```yaml
+type: custom:grow-calendar-card
+name: Grow Zelt 2
+entity_prefix: grow_zelt_2
+calendar_entity: calendar.grow_zelt_2_kalender
+phase_sensor: sensor.grow_zelt_2_aktuelle_phase
+```
