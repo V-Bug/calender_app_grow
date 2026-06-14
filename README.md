@@ -1,13 +1,15 @@
 # Grow Calendar für Home Assistant
 
-Custom Integration für einen Grow-Kalender mit vier Phasen:
+Grow Calendar ist eine Custom Integration für Home Assistant, mit der du einen Grow in vier Phasen verwalten kannst:
 
 - Saat
 - Vegetation
 - Blüte
 - Ernte
 
-Die vier Phasen werden als Datum-Entitäten angelegt. Sobald eine neue Phase beginnt, endet die vorherige Phase automatisch. Zusätzlich erzeugt die Integration einen Kalender und Sensoren für die Dauer zwischen den Phasen.
+Die Integration legt für jede Phase eine Datum-Entität an. Sobald du ein Startdatum für eine spätere Phase setzt, berechnet Grow Calendar daraus automatisch das Ende der vorherigen Phase. Zusätzlich erstellt die Integration einen Kalender, einen Sensor für die aktuelle Phase, einen Sensor für den aktuellen Phasentag und Sensoren für die Dauer zwischen den Phasen.
+
+Die Daten werden lokal in Home Assistant gespeichert. Es wird kein externer Dienst verwendet.
 
 ## Installation
 
@@ -17,9 +19,20 @@ Die vier Phasen werden als Datum-Entitäten angelegt. Sobald eine neue Phase beg
 4. Suche nach `Grow Calendar`.
 5. Lege einen Namen an, z. B. `Grow Zelt 1`.
 
+## Nutzung
+
+Nach der Einrichtung entstehen vier Datum-Entitäten. Dort trägst du ein, wann eine Phase beginnt:
+
+- `date.<grow>_saat`
+- `date.<grow>_vegetation`
+- `date.<grow>_blute`
+- `date.<grow>_ernte`
+
+Beispiel: Wenn `Saat` am 01.06. startet und `Vegetation` am 08.06. eingetragen wird, läuft die Saat-Phase vom 01.06. bis zum 08.06. Der Kalender zeigt diese Phase als ganztägigen Eintrag. Die Dauer-Sensoren berechnen die Tage zwischen den gesetzten Phasen automatisch.
+
 ## Entitäten
 
-Pro Grow entstehen:
+Pro Grow werden diese Entitäten angelegt:
 
 - `date.<grow>_saat`
 - `date.<grow>_vegetation`
@@ -31,6 +44,8 @@ Pro Grow entstehen:
 - `sensor.<grow>_saat_bis_vegetation`
 - `sensor.<grow>_vegetation_bis_blute`
 - `sensor.<grow>_blute_bis_ernte`
+
+Die Entity-IDs können je nach vergebenem Namen abweichen. Du findest sie in Home Assistant unter `Einstellungen > Geräte & Dienste > Entitäten`.
 
 ## Dashboard-Beispiel
 
@@ -56,8 +71,6 @@ sections:
           - sensor.grow_blute_bis_ernte
 ```
 
-Die Entity-IDs können je nach Name abweichen. In Home Assistant findest du sie unter `Einstellungen > Geräte & Dienste > Entitäten`.
-
 ## Phasendatum löschen
 
 Wenn du ein Datum versehentlich gesetzt hast, kannst du es über den Service `grow_calendar.clear_phase_date` wieder löschen. Dadurch verschwindet auch der entsprechende Kalendereintrag.
@@ -79,13 +92,22 @@ data:
   phase: harvest
 ```
 
+Alternativ kannst du eine bestimmte Config Entry ID verwenden:
+
+```yaml
+action: grow_calendar.clear_phase_date
+data:
+  entry_id: 0123456789abcdef
+  phase: harvest
+```
+
 ## Grow Calendar Card
 
 Die Integration stellt zusätzlich eine Custom-Lovelace-Karte bereit. Sie zeigt:
 
 - aktuelle Phase
-- Datum, an dem die aktuelle Phase gestartet ist
-- wie viele Tage seitdem vergangen sind
+- Startdatum der aktuellen Phase
+- vergangene Tage seit Phasenstart
 - Übersicht aller vier Phasen mit Startdatum, Enddatum und Tagen
 
 ### Resource eintragen
@@ -106,7 +128,7 @@ Nach dem Neustart von Home Assistant muss die Karte einmal als Dashboard-Resourc
 JavaScript-Modul
 ```
 
-### Karten-Beispiel
+### Vollständige Karte
 
 ```yaml
 type: custom:grow-calendar-card
@@ -117,12 +139,12 @@ entity_prefix: grow
 Die Karte leitet daraus automatisch diese Entitäten ab:
 
 - `sensor.grow_aktuelle_phase`
+- `sensor.grow_tag_der_phase`
+- `calendar.grow_kalender`
 - `date.grow_saat`
 - `date.grow_vegetation`
 - `date.grow_blute`
 - `date.grow_ernte`
-
-Wenn du mehrere Grows angelegt hast, kannst du dieselbe Karte mehrfach verwenden und nur `entity_prefix` austauschen.
 
 ### Nur Phasen-Karten
 
@@ -133,7 +155,9 @@ type: custom:grow-calendar-phases-card
 entity_prefix: grow
 ```
 
-Beispiel für einen zweiten Grow:
+## Mehrere Grows
+
+Du kannst die Integration mehrfach einrichten, z. B. für mehrere Zelte oder Pflanzen. Verwende dann pro Dashboard-Karte den passenden Prefix:
 
 ```yaml
 type: custom:grow-calendar-card
@@ -141,7 +165,7 @@ name: Grow Zelt 2
 entity_prefix: grow_zelt_2
 ```
 
-Du musst die Sensoren dafür nicht einzeln in der Karte umbenennen. Der Prefix wird an dieser einen Stelle gesetzt und die Karte leitet Kalender, Phasensensor und Datum-Entitäten daraus ab.
+Du musst die Sensoren nicht einzeln in der Karte umbenennen. Der Prefix wird an einer Stelle gesetzt und die Karte leitet Kalender, Phasensensor und Datum-Entitäten daraus ab.
 
 Alternativ kannst du den Kalender direkt setzen. Wenn er dem Muster `calendar.<prefix>_kalender` folgt, erkennt die Karte den Prefix daraus automatisch:
 
