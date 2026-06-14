@@ -54,6 +54,18 @@ class GrowCalendarCard extends HTMLElement {
         `sensor.${entityPrefix}_tag_der_phase`,
       calendar_entity: calendarEntity || `calendar.${entityPrefix}_kalender`,
       dates: config.dates || {},
+      grid_columns: this._positiveInteger(
+        config.grid_columns || config.gridColumns,
+        12
+      ),
+      min_grid_columns: this._positiveInteger(
+        config.min_grid_columns || config.minGridColumns,
+        6
+      ),
+      phase_min_width: this._cssLength(
+        config.phase_min_width || config.phaseMinWidth,
+        "150px"
+      ),
     };
   }
 
@@ -65,6 +77,15 @@ class GrowCalendarCard extends HTMLElement {
 
   getCardSize() {
     return 3;
+  }
+
+  getGridOptions() {
+    return {
+      columns: this.config?.grid_columns || 12,
+      min_columns: this.config?.min_grid_columns || 6,
+      rows: 4,
+      min_rows: 3,
+    };
   }
 
   render() {
@@ -143,7 +164,7 @@ class GrowCalendarCard extends HTMLElement {
         .phases {
           display: grid;
           gap: 18px;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(${this.config.phase_min_width}, 1fr));
         }
 
         .phase {
@@ -216,18 +237,6 @@ class GrowCalendarCard extends HTMLElement {
           text-align: right;
         }
 
-        @media (max-width: 900px) {
-          .phases {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-          }
-        }
-
-        @container (max-width: 900px) {
-          .phases {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-          }
-        }
-
         @media (max-width: 640px) {
           .card-content {
             gap: 14px;
@@ -252,7 +261,6 @@ class GrowCalendarCard extends HTMLElement {
 
           .phases {
             gap: 10px;
-            grid-template-columns: 1fr;
           }
 
           .phase {
@@ -330,7 +338,6 @@ class GrowCalendarCard extends HTMLElement {
 
           .phases {
             gap: 10px;
-            grid-template-columns: 1fr;
           }
 
           .phase {
@@ -683,6 +690,24 @@ class GrowCalendarCard extends HTMLElement {
     return match?.[1];
   }
 
+  _positiveInteger(value, fallback) {
+    const number = Number(value);
+    if (!Number.isInteger(number) || number < 1) {
+      return fallback;
+    }
+
+    return number;
+  }
+
+  _cssLength(value, fallback) {
+    if (typeof value !== "string") {
+      return fallback;
+    }
+
+    const trimmed = value.trim();
+    return /^\d+(\.\d+)?(px|rem|em|%)$/.test(trimmed) ? trimmed : fallback;
+  }
+
   _escape(value) {
     return String(value)
       .replace(/&/g, "&amp;")
@@ -700,6 +725,15 @@ if (!customElements.get("grow-calendar-card")) {
 class GrowCalendarPhasesCard extends GrowCalendarCard {
   getCardSize() {
     return 2;
+  }
+
+  getGridOptions() {
+    return {
+      columns: this.config?.grid_columns || 12,
+      min_columns: this.config?.min_grid_columns || 6,
+      rows: 2,
+      min_rows: 2,
+    };
   }
 
   render() {
@@ -734,8 +768,7 @@ class GrowCalendarPhasesCard extends GrowCalendarCard {
         .phases-only {
           display: grid;
           gap: 12px;
-          grid-template-columns: repeat(4, minmax(270px, 1fr));
-          overflow-x: auto;
+          grid-template-columns: repeat(auto-fit, minmax(${this.config.phase_min_width}, 1fr));
           padding: 12px;
         }
 
@@ -806,17 +839,6 @@ class GrowCalendarPhasesCard extends GrowCalendarCard {
           overflow-wrap: anywhere;
         }
 
-        @container (max-width: 900px) {
-          .phases-only {
-            grid-template-columns: repeat(2, minmax(270px, 1fr));
-          }
-        }
-
-        @container (max-width: 620px) {
-          .phases-only {
-            grid-template-columns: 1fr;
-          }
-        }
       </style>
     `;
   }

@@ -155,6 +155,18 @@ type: custom:grow-calendar-phases-card
 entity_prefix: grow
 ```
 
+Die Karte nutzt im Sections-Dashboard standardmäßig die volle Breite und ordnet die Phasen automatisch an. Solange genug Platz vorhanden ist, stehen die Phasen nebeneinander. Wenn eine Phase zu schmal werden würde, bricht sie automatisch in die nächste Zeile um.
+
+Den Umbruchpunkt kannst du optional anpassen:
+
+```yaml
+type: custom:grow-calendar-phases-card
+entity_prefix: grow
+phase_min_width: 140px
+```
+
+Kleinere Werte halten die Phasen länger nebeneinander, größere Werte lassen sie früher umbrechen.
+
 ## Mehrere Grows
 
 Du kannst die Integration mehrfach einrichten, z. B. für mehrere Zelte oder Pflanzen. Verwende dann pro Dashboard-Karte den passenden Prefix:
