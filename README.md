@@ -165,17 +165,19 @@ Dafür muss die Resource `/grow_calendar/grow-calendar-phases-card.js` eingetrag
 
 Falls du bereits `custom:grow-calendar-phase-card` ohne `s` verwendest, funktioniert diese Schreibweise ebenfalls als Alias.
 
-Die Karte nutzt im Sections-Dashboard standardmäßig die volle Breite und ordnet die Phasen automatisch an. Solange genug Platz vorhanden ist, stehen die Phasen nebeneinander. Wenn eine Phase zu schmal werden würde, bricht sie automatisch in die nächste Zeile um.
+Die Karte nutzt im Sections-Dashboard standardmäßig 4 von 12 Spalten. Dadurch können mehrere Karten nebeneinander stehen und brechen erst in die nächste Zeile um, wenn der verfügbare Platz zu klein wird. Die Phasen innerhalb der Karte ordnen sich ebenfalls automatisch an.
 
-Den Umbruchpunkt kannst du optional anpassen:
+Die Kartenbreite und den Umbruchpunkt kannst du optional anpassen:
 
 ```yaml
 type: custom:grow-calendar-phases-card
 entity_prefix: grow
+grid_columns: 4
+min_grid_columns: 3
 phase_min_width: 140px
 ```
 
-Kleinere Werte halten die Phasen länger nebeneinander, größere Werte lassen sie früher umbrechen.
+Kleinere Werte bei `phase_min_width` halten die Phasen länger nebeneinander, größere Werte lassen sie früher umbrechen. Wenn eine Karte wieder die volle Dashboard-Breite nutzen soll, setze `grid_columns: 12`.
 
 ## Mehrere Grows
 

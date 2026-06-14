@@ -58,11 +58,11 @@ class GrowCalendarCard extends HTMLElement {
       dates: config.dates || {},
       grid_columns: this._positiveInteger(
         config.grid_columns || config.gridColumns,
-        12
+        4
       ),
       min_grid_columns: this._positiveInteger(
         config.min_grid_columns || config.minGridColumns,
-        6
+        3
       ),
       phase_min_width: this._cssLength(
         config.phase_min_width || config.phaseMinWidth,
