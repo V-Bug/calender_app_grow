@@ -88,7 +88,7 @@ class GrowCalendarData:
 async def async_setup(hass: HomeAssistant, _config: dict) -> bool:
     """Set up Grow Calendar frontend assets."""
     await hass.http.async_register_static_paths(
-        [StaticPathConfig(FRONTEND_URL, str(FRONTEND_PATH), True)]
+        [StaticPathConfig(FRONTEND_URL, str(FRONTEND_PATH), False)]
     )
 
     async def async_clear_phase_date(call: ServiceCall) -> None:

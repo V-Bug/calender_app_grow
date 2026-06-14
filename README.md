@@ -112,17 +112,23 @@ Die Integration stellt zusätzlich eine Custom-Lovelace-Karte bereit. Sie zeigt:
 
 ### Resource eintragen
 
-Nach dem Neustart von Home Assistant muss die Karte einmal als Dashboard-Resource eingetragen werden:
+Nach dem Neustart von Home Assistant muss die gewünschte Karte einmal als Dashboard-Resource eingetragen werden:
 
 1. Öffne `Einstellungen > Dashboards > Ressourcen`.
 2. Klicke auf `Ressource hinzufügen`.
-3. Trage diese URL ein:
+3. Trage für die vollständige Karte diese URL ein:
 
 ```text
 /grow_calendar/grow-calendar-card.js
 ```
 
-4. Wähle als Ressourcentyp:
+4. Für die reine Phasenkarte trage diese URL ein:
+
+```text
+/grow_calendar/grow-calendar-phases-card.js
+```
+
+5. Wähle jeweils als Ressourcentyp:
 
 ```text
 JavaScript-Modul
@@ -154,6 +160,8 @@ Wenn du nur die vier kleinen Phasen-Karten ohne Überschrift und Status anzeigen
 type: custom:grow-calendar-phases-card
 entity_prefix: grow
 ```
+
+Dafür muss die Resource `/grow_calendar/grow-calendar-phases-card.js` eingetragen sein.
 
 Die Karte nutzt im Sections-Dashboard standardmäßig die volle Breite und ordnet die Phasen automatisch an. Solange genug Platz vorhanden ist, stehen die Phasen nebeneinander. Wenn eine Phase zu schmal werden würde, bricht sie automatisch in die nächste Zeile um.
 
