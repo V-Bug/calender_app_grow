@@ -39,6 +39,11 @@ class GrowCalendarPhasesCard extends GrowCalendarCard {
           display: block;
         }
 
+        grow-calendar-phase-card {
+          container-type: inline-size;
+          display: block;
+        }
+
         ha-card {
           display: block;
           overflow: hidden;
@@ -127,9 +132,18 @@ if (!customElements.get("grow-calendar-phases-card")) {
   customElements.define("grow-calendar-phases-card", GrowCalendarPhasesCard);
 }
 
+if (!customElements.get("grow-calendar-phase-card")) {
+  customElements.define("grow-calendar-phase-card", GrowCalendarPhasesCard);
+}
+
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: "grow-calendar-phases-card",
   name: "Grow Calendar Phases Card",
   description: "Zeigt nur die vier Grow-Phasen mit Start, Ende und Tagen.",
+});
+window.customCards.push({
+  type: "grow-calendar-phase-card",
+  name: "Grow Calendar Phase Card",
+  description: "Alias für die Grow Calendar Phases Card.",
 });

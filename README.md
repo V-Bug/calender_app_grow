@@ -163,6 +163,8 @@ entity_prefix: grow
 
 Dafür muss die Resource `/grow_calendar/grow-calendar-phases-card.js` eingetragen sein.
 
+Falls du bereits `custom:grow-calendar-phase-card` ohne `s` verwendest, funktioniert diese Schreibweise ebenfalls als Alias.
+
 Die Karte nutzt im Sections-Dashboard standardmäßig die volle Breite und ordnet die Phasen automatisch an. Solange genug Platz vorhanden ist, stehen die Phasen nebeneinander. Wenn eine Phase zu schmal werden würde, bricht sie automatisch in die nächste Zeile um.
 
 Den Umbruchpunkt kannst du optional anpassen:
